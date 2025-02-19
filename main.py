@@ -2,9 +2,9 @@
 # Imports
 import streamlit as st #st is the shortcut of streamlit module
 import pandas as pd #pd is the shortcut of pandas module
-import os # for file paths
-from io import BytesIO # for file handling
-import xlsxwriter  # Add this import
+import os  # for file paths
+from io import BytesIO  # for file handling
+import xlsxwriter  # for Excel file handling
 
 # Set up our App
 st.set_page_config(page_title="💿 Data Sweeper", layout="wide")
@@ -21,9 +21,18 @@ if uploaded_files:
         if file_ext == ".csv":
             df = pd.read_csv(file)
         elif file_ext == ".xlsx":
-            df = pd.read_excel(file)
+            try:
+                df = pd.read_excel(file, engine='openpyxl')
+            except Exception as e:
+                st.error(f"Error reading Excel file: {str(e)}")
+                continue
         else:
-            st.error(f"Unsported file type: {file_ext}")
+            st.error(f"Unsupported file type: {file_ext}")
+            continue
+
+        # Check if DataFrame is empty
+        if df.empty:
+            st.error(f"The file {file.name} is empty or could not be read properly.")
             continue
 
         #Display info about the file

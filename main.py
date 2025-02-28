@@ -19,7 +19,7 @@ if uploaded_files:
 
 
         if file_ext == ".csv":
-            df = pd.read_csv(file)
+            df = pd.read_csv(file, encoding="ISO-8859-1")
         elif file_ext == ".xlsx":
             try:
                 df = pd.read_excel(file, engine='openpyxl')
